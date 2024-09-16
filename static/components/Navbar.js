@@ -6,13 +6,16 @@ export default{
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <router-link class="nav-link active" aria-current="page" to="/">Home</a>
                     </li>
                     <li class="nav-item" v-if="role=='admin'">
                         <router-link class="nav-link" to="/users">Users</a>
+                    </li>
+                    <li class="nav-item" v-if="role=='admin'">
+                        <router-link class="nav-link" to="/create-service">Create Service</a>
                     </li>
                     <li class="nav-item text-end" v-if="is_login && active=='true'">
                         <button class="nav-link" @click="logout">Logout</button>
