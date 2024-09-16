@@ -39,7 +39,7 @@ def user_login():
         return jsonify({"message": "User Not Found"}), 404
     
     if check_password_hash(user.password, data.get("password")):
-        return jsonify({"token": user.get_auth_token(), "email": user.email, "role": user.roles[0].name})
+        return jsonify({"token": user.get_auth_token(), "email": user.email, "role": user.roles[0].name, "active": user.active})
     else:
         return jsonify({"message" :"Wrong Password"}), 400
     

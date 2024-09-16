@@ -33,6 +33,7 @@ export default{
             if(res.ok){
                 localStorage.setItem('auth-token', data.token)
                 localStorage.setItem('role', data.role)
+                localStorage.setItem('active', data.active)
                 this.$router.push({path: '/'})
             }
             else {
