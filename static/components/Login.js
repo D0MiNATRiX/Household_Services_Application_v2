@@ -2,6 +2,7 @@ export default{
     template: `
     <div class="d-flex justify-content-center" style="margin-top: 25vh">
         <div class="mb-3 p-5 bg-light">
+            <h2>Login</h2>
             <div class="text-danger">{{error}}</div>
             <label for="user-email" class="form-label">Email Address</label>
             <input type="email" class="form-control" id="user-email" placeholder="name@example.com" v-model="cred.email">
