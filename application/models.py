@@ -24,6 +24,15 @@ class Customer(db.Model):
     pincode = db.Column(db.Integer())
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
 
+class Professional(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    full_name = db.Column(db.String(255))
+    service = db.Column(db.String(255))
+    experience = db.Column(db.String(255))
+    address = db.Column(db.String(255))
+    pincode = db.Column(db.Integer())
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
+
 class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(80), unique=True)

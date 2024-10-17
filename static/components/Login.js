@@ -3,7 +3,7 @@ export default{
     <div class="d-flex justify-content-center" style="margin-top: 25vh">
         <div class="mb-3 p-5 bg-light" style="width: 35rem;">
             <div>    
-                <router-link class="nav-link text-end text-success p-1" to="/">Register as Professional</router-link> 
+                <router-link class="nav-link text-end text-success p-1" to="/service-professional-signup"">Register as Professional</router-link> 
             </div>    
             <h2 class="text-center p-1">Login</h2>
             <div class="text-danger">{{error}}</div>

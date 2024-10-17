@@ -1,8 +1,8 @@
 export default{
     template: `
     <div class="d-flex justify-content-center" style="margin-top: 25vh">
-        <div class="mb-3 p-5 bg-light" style="width: 35rem;">    
-            <h2 class="text-center p-1">Customer Signup</h2>
+        <div class="mb-3 p-5 bg-light" style="width: 40rem;">    
+            <h2 class="text-center p-1">Service Professional Signup</h2>
             <div class="text-danger">{{error}}</div>
             <form>
                 <div class="row mb-3">
@@ -21,6 +21,18 @@ export default{
                     <label for="user-fullname" class="col-sm-2 col-form-label">Fullname:</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" id="user-fullname" v-model="cred.full_name">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="user-service" class="col-sm-2 col-form-label">Service:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="user-service" v-model="cred.service">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="user-experience" class="col-sm-2 col-form-label">Experience:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="user-experience" v-model="cred.experience">
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -49,6 +61,8 @@ export default{
                 email: null,
                 password: null,
                 full_name: null,
+                service: null,
+                experience: null,
                 address: null,
                 pincode: null
             },
@@ -57,7 +71,7 @@ export default{
     },
     methods: {
         async register() {
-            const res = await fetch('/api/customers', {
+            const res = await fetch('/api/professionals', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
