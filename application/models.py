@@ -17,6 +17,12 @@ class User(db.Model, UserMixin):
     fs_uniquifier = db.Column(db.String(255), unique=True, nullable=False)
     roles = db.relationship('Role', secondary='roles_users', backref=db.backref('users', lazy='dynamic'))
 
+class Customer(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    full_name = db.Column(db.String(255))
+    address = db.Column(db.String(255))
+    pincode = db.Column(db.Integer())
+
 class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(80), unique=True)

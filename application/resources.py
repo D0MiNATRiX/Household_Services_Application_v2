@@ -1,6 +1,8 @@
 from flask_restful import Resource, Api, reqparse, marshal, fields
 from flask_security import auth_required, roles_required, current_user
-from .models import Service, db
+from .models import Service,Customer,User, db
+from werkzeug.security import generate_password_hash
+from application.sec import datastore
 
 api = Api(prefix='/api')
 
@@ -37,4 +39,30 @@ class Services(Resource):
         db.session.commit()
         return {"message": "Service Created"}
     
+parser = reqparse.RequestParser()
+
+parser.add_argument('email', type=str, help='Email is required and should be a string', required=True)
+parser.add_argument('password', type=str, help='Password is required and should be a string', required=True)
+parser.add_argument('full_name', type=str, help='Full Name is required and should be a string', required=True)
+parser.add_argument('address', type=str, help='Address is required and should be a string', required=True)
+parser.add_argument('pincode', type=int, help='Pincode is required and should be an integer', required=True)
+
+class Customers(Resource):
+    # @auth_required("token")
+    # def get(self):
+    #     all_services = Service.query.all()
+    #     if "professional" not in current_user.roles:
+    #         return marshal(all_services, service_fields)
+    #     else:
+    #         return {"message": "This funtion us not allowed for current user"}, 404
+    
+    def post(self):
+        args = parser.parse_args()
+        customer = Customer(full_name=args.full_name, address=args.address, pincode=args.pincode)
+        datastore.create_user(email=args.email, password=generate_password_hash(args.password), roles=['customer'])
+        db.session.add(customer)
+        db.session.commit()
+        return {"message": "Customer Added"}
+    
 api.add_resource(Services, '/services')
+api.add_resource(Customers, '/customers')
