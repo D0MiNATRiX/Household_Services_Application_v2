@@ -48,18 +48,10 @@ parser.add_argument('address', type=str, help='Address is required and should be
 parser.add_argument('pincode', type=int, help='Pincode is required and should be an integer', required=True)
 
 class Customers(Resource):
-    # @auth_required("token")
-    # def get(self):
-    #     all_services = Service.query.all()
-    #     if "professional" not in current_user.roles:
-    #         return marshal(all_services, service_fields)
-    #     else:
-    #         return {"message": "This funtion us not allowed for current user"}, 404
-    
     def post(self):
         args = parser.parse_args()
-        customer = Customer(full_name=args.full_name, address=args.address, pincode=args.pincode)
         datastore.create_user(email=args.email, password=generate_password_hash(args.password), roles=['customer'])
+        customer = Customer(full_name=args.full_name, address=args.address, pincode=args.pincode, user_id = User.query.filter_by(email=args.email).all()[0].id)
         db.session.add(customer)
         db.session.commit()
         return {"message": "Customer Added"}

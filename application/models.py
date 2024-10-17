@@ -22,6 +22,7 @@ class Customer(db.Model):
     full_name = db.Column(db.String(255))
     address = db.Column(db.String(255))
     pincode = db.Column(db.Integer())
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
 
 class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer(), primary_key=True)
