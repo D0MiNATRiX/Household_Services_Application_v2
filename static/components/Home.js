@@ -11,7 +11,7 @@ export default{
         <ProfessionalHome v-if="userRole=='professional'"/>
         <CustomerHome v-if="userRole=='customer'"/>
         <div class="d-flex flex-row">
-            <Services v-for="service in services" :service = "service"/>
+            <Services v-for="service in services" :service = "service" v-bind:key="service.id"/>
         </div>
     </div>
     `,

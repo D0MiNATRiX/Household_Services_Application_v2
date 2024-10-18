@@ -1,3 +1,8 @@
 export default{
-    template: `<div>Welcome Admin</div>`
+    template: `
+    <div>
+        <h1 class="text-danger text-center">Welcome Admin</h1>
+        
+    </div>
+    `
 }
