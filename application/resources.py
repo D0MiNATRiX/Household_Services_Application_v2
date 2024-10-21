@@ -26,8 +26,8 @@ class Services(Resource):
         all_services = Service.query.all()
         if "professional" not in current_user.roles:
             return marshal(all_services, service_fields)
-        else:
-            return {"message": "This funtion us not allowed for current user"}, 404
+        # else:
+        #     return {"message": "This funtion us not allowed for current user"}, 404
     
     @auth_required("token")
     @roles_required("admin")
@@ -38,14 +38,45 @@ class Services(Resource):
         db.session.commit()
         return {"message": "Service Created"}
     
+class UpdateService(Resource):
+    @auth_required('token')
+    @roles_required('admin')
+    def get(self,id):
+        service = Service.query.get(id)
+        return marshal(service, service_fields)
+    
+    def post(self,id):
+        service = Service.query.get(id)
+        args = parser1.parse_args()
+        service.name = args.name
+        service.price = args.price
+        service.time_required = args.time_required
+        service.description = args.description
+        db.session.commit()
+        return {"message": "Service Updated"}
+
+    
 parser2 = reqparse.RequestParser()
 parser2.add_argument('email', type=str, help='Email is required and should be a string', required=True)
 parser2.add_argument('password', type=str, help='Password is required and should be a string', required=True)
 parser2.add_argument('full_name', type=str, help='Full Name is required and should be a string', required=True)
 parser2.add_argument('address', type=str, help='Address is required and should be a string', required=True)
 parser2.add_argument('pincode', type=int, help='Pincode is required and should be an integer', required=True)
-
+customer_fields = {
+    "id": fields.Integer,
+    "full_name": fields.String,
+    "address": fields.String,
+    "pincode": fields.Integer,
+    "user_id": fields.Integer
+}
 class Customers(Resource):
+    @auth_required('token')
+    @roles_required('admin')
+    def get(self):
+        customers = Customer.query.all()
+        if len(customers) == 0:
+            return {"message": "No User Found"}, 404
+        return marshal(customers, customer_fields)
     def post(self):
         args = parser2.parse_args()
         datastore.create_user(email=args.email, password=generate_password_hash(args.password), roles=['customer'])
@@ -63,11 +94,27 @@ parser3.add_argument('experience', type=str, help='Experience is required and sh
 parser3.add_argument('address', type=str, help='Address is required and should be a string', required=True)
 parser3.add_argument('pincode', type=int, help='Pincode is required and should be an integer', required=True)
 
+professional_fields = {
+    "id": fields.Integer,
+    "full_name": fields.String,
+    "experience": fields.String,
+    "service": fields.String,
+    "active": fields.Boolean
+}
+
 class Professionals(Resource):
+    @auth_required('token')
+    @roles_required('admin')
+    def get(self):
+        professionals = Professional.query.all()
+        if len(professionals) == 0:
+            return {"message": "No User Found"}, 404
+        return marshal(professionals, professional_fields)
+    
     def post(self):
         args = parser3.parse_args()
         datastore.create_user(email=args.email, password=generate_password_hash(args.password), roles=['professional'], active=False)
-        professional = Professional(full_name=args.full_name, service=args.service, experience=args.experience, address=args.address, pincode=args.pincode, user_id = User.query.filter_by(email=args.email).all()[0].id)
+        professional = Professional(full_name=args.full_name, service=args.service, experience=args.experience, address=args.address, pincode=args.pincode, user_id = User.query.filter_by(email=args.email).all()[0].id, active=False)
         db.session.add(professional)
         db.session.commit()
         return {"message": "Professional Added"}
@@ -75,3 +122,4 @@ class Professionals(Resource):
 api.add_resource(Services, '/services')
 api.add_resource(Customers, '/customers')
 api.add_resource(Professionals, '/professionals')
+api.add_resource(UpdateService, '/update/service/<int:id>')

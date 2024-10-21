@@ -10,7 +10,10 @@ export default{
         <AdminHome v-if="userRole=='admin'"/>
         <ProfessionalHome v-if="userRole=='professional'"/>
         <CustomerHome v-if="userRole=='customer'"/>
-        <div class="d-flex flex-row">
+        <div v-if="userRole=='admin'">
+            <Services v-for="service in services" :service = "service" v-bind:key="service.id"/>
+        </div>
+        <div v-if="userRole=='customer'" class="d-flex flex-row">
             <Services v-for="service in services" :service = "service" v-bind:key="service.id"/>
         </div>
     </div>

@@ -32,6 +32,7 @@ class Professional(db.Model):
     address = db.Column(db.String(255))
     pincode = db.Column(db.Integer())
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    active = db.Column(db.Boolean())
 
 class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer(), primary_key=True)

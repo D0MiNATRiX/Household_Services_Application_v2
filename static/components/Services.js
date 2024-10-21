@@ -13,13 +13,21 @@ export default {
             </div>
         </div>
         <div class="p-2" v-if="role == 'admin'">
-            <h2>Services</h2>
-            <div class="card text-center" style="width: 77rem;">
-                <div class="card-header">
-                    ID | Service Name | Base Price | Action
-                </div>
+            <div class="card text-center" style="width: 76rem;">
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">An item</li>
+                    <li class="list-group-item">
+                        <div class="container text-center">
+                            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
+                                <div class="col">{{service.id}}</div>
+                                <div class="col">{{service.name}}</div>
+                                <div class="col">{{service.price}}</div>
+                                <div class="col">
+                                    <button class="btn btn-warning" @click="update(service.id)">Edit</button>
+                                    <button class="btn btn-danger" @click="del(service.id)">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -28,12 +36,44 @@ export default {
     props: ['service'],
     data() {
         return {
-            role: localStorage.getItem('role')
+            token: localStorage.getItem('auth-token'),
+            role: localStorage.getItem('role'),
         }
     },
     methods: {
         async request() {
             alert('Service Requested')
+        },
+        async del(id) {
+            const res = await fetch(`delete/service/${id}`, {
+                headers: {
+                    'Authentication-Token': this.token
+                }
+            })
+            const data = await res.json()
+            if(res.ok){
+                alert(data.message)
+                location.reload()
+            }
+        },
+        async update(id) {
+            localStorage.setItem('update_service_id', id)
+            this.$router.push({path: `/update-service`})
+        }
+    },
+    async mounted() {
+        const res = await fetch(`/api/update/service/${localStorage.getItem('update_service_id')}`, {
+            headers: {
+                'Authentication-Token': this.token
+            }
+        })
+        const data = await res.json()
+        if(res.ok){
+            localStorage.setItem('service_name', data.name)
+            localStorage.setItem('service_price', data.price)
+            localStorage.setItem('service_time', data.time_required)
+            localStorage.setItem('service_description', data.description)
+            localStorage.setItem('reload', 0)
         }
     }
 }
