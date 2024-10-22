@@ -5,7 +5,9 @@ import Services from "./Services.js"
 
 export default{
     template: `
-    <div class="text-danger" v-if="active=='false'">User Not Approved</div>
+    <div v-if="active=='false'">
+        <h1 class="text-center text-danger">User Not Approved</h1>
+    </div>
     <div v-else>
         <AdminHome v-if="userRole=='admin'"/>
         <ProfessionalHome v-if="userRole=='professional'"/>

@@ -1,8 +1,9 @@
 from flask_restful import Resource, Api, reqparse, marshal, fields
 from flask_security import auth_required, roles_required, current_user
-from .models import Service,Customer,User,Professional, db
+from .models import Service,Customer,User,Professional, ServiceRequest, db
 from werkzeug.security import generate_password_hash
 from application.sec import datastore
+from datetime import datetime
 
 api = Api(prefix='/api')
 
@@ -118,8 +119,89 @@ class Professionals(Resource):
         db.session.add(professional)
         db.session.commit()
         return {"message": "Professional Added"}
+
+parser4 = reqparse.RequestParser()
+parser4.add_argument('service_id', type=int, help='Service ID should be an integer')
+parser4.add_argument('customer_id', type=int, help='Customer ID should be an integer')
+parser4.add_argument('professional_id', type=int, help='Professional ID should be an integer')
+parser4.add_argument('date_of_completion', type=str, help='Date of Completion should be a string')
+parser4.add_argument('service_status', type=str, help='Service Status is should be a string')
+service_request_fields = {
+    "id": fields.Integer,
+    "service_id": fields.Integer,
+    "customer_id": fields.Integer,
+    "professional_id": fields.Integer,
+    "date_of_request": fields.String,
+    "date_of_completion": fields.String,
+    "rating": fields.Integer,
+    "remarks": fields.String,
+    "service_status": fields.String
+}
+class ServiceRequests(Resource):
+    def get(self):
+        service_requests = ServiceRequest.query.all()
+        if len(service_requests) == 0:
+            return {"message": "No User Found"}, 404
+        all_services = Service.query.all()
+        return {
+            'service_requests': marshal(service_requests,service_request_fields),
+            'services': marshal(all_services, service_fields)
+        }
     
+    def post(self):
+        args = parser4.parse_args()
+        service_request = ServiceRequest(service_id=args.service_id, customer_id=Customer.query.filter_by(user_id=args.customer_id).all()[0].id, date_of_request=datetime.now().strftime("%d/%m/%y"), service_status='requested')
+        db.session.add(service_request)
+        db.session.commit()
+        return {"message": "Service Request Added"}
+    
+class AcceptServiceRequest(Resource):
+    # @auth_required('token')
+    # @roles_required('admin')
+    # def get(self,id):
+    #     service = Service.query.get(id)
+    #     return marshal(service, service_fields)
+    
+    def post(self,id):
+        service_request = ServiceRequest.query.get(id)
+        args = parser4.parse_args()
+        service_request.professional_id = args.professional_id
+        service_request.date_of_completion = args.date_of_completion
+        db.session.commit()
+        return {"message": "Service Request Updated"}
+    
+parser5 = reqparse.RequestParser()
+parser5.add_argument('user_id', type=int, help='User_id is required and should be an integer', required=True)
+class ServiceRequestByCustomer(Resource):
+    def post(self):
+        args = parser5.parse_args()
+        customer = Customer.query.filter_by(user_id=args.user_id).all()[0]
+        service_requests = ServiceRequest.query.filter_by(customer_id=customer.id).all()
+        all_services = Service.query.all()
+        return {
+            'service_requests': marshal(service_requests,service_request_fields),
+            'services': marshal(all_services, service_fields)
+        }
+
+parser6 = reqparse.RequestParser()
+parser6.add_argument('rating', type=int, help='Rating is required and should be an integer', required=True)
+parser6.add_argument('remarks', type=str, help='Remarks should be a string')
+class CloseServiceRequest(Resource):
+    def post(self,id):
+        args = parser6.parse_args()
+        service_request = ServiceRequest.query.get(id)
+        service_request.rating = args.rating
+        service_request.remarks = args.remarks
+        service_request.date_of_completion = datetime.now().strftime("%d/%m/%y")
+        service_request.service_status = 'closed'
+        db.session.commit()
+        return {"message": "Service Request Closed"}
+
 api.add_resource(Services, '/services')
 api.add_resource(Customers, '/customers')
 api.add_resource(Professionals, '/professionals')
 api.add_resource(UpdateService, '/update/service/<int:id>')
+api.add_resource(ServiceRequests, '/request/service')
+api.add_resource(AcceptServiceRequest, '/update/service/request/<int:id>')
+api.add_resource(ServiceRequestByCustomer, '/service-request/customer')
+api.add_resource(CloseServiceRequest, '/close/service-request/<int:id>')

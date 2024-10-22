@@ -45,3 +45,14 @@ class Service(db.Model):
     price = db.Column(db.Integer(), nullable=False)
     time_required = db.Column(db.String(), nullable=False)
     description = db.Column(db.String(), nullable=False)
+
+class ServiceRequest(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    service_id = db.Column(db.Integer, db.ForeignKey('service.id'))
+    customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'))
+    professional_id = db.Column(db.Integer, db.ForeignKey('professional.id'))
+    date_of_request = db.Column(db.String())
+    date_of_completion = db.Column(db.String())
+    rating = db.Column(db.Integer())
+    remarks = db.Column(db.String())
+    service_status = db.Column(db.String())

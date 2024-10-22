@@ -5,6 +5,9 @@ import ServiceForm from "./components/ServiceForm.js"
 import UpdateServiceForm from "./components/UpdateServiceForm.js"
 import CustomerSignup from "./components/CustomerSignup.js"
 import ServiceProfessionalSignup from "./components/ServiceProfessionalSignup.js"
+import ServiceHistory from "./components/ServiceHistory.js"
+import ServiceRemarks from "./components/ServiceRemarks.js"
+import UpdateServiceRemarks from "./components/UpdateServiceRemarks.js"
 
 const routes = [
     {path: '/', component: Home, name: 'Home'},
@@ -13,7 +16,10 @@ const routes = [
     {path: '/create-service', component: ServiceForm},
     {path: '/update-service', component: UpdateServiceForm},
     {path: '/customer-signup', component: CustomerSignup},
-    {path: '/service-professional-signup', component: ServiceProfessionalSignup}
+    {path: '/service-professional-signup', component: ServiceProfessionalSignup},
+    {path: '/service-history', component: ServiceHistory},
+    {path: '/service-remarks', component: ServiceRemarks},
+    {path: '/update-service-remarks', component: UpdateServiceRemarks}
 ]
 
 export default new VueRouter({

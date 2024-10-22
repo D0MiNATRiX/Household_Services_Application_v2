@@ -2,7 +2,7 @@ from flask import current_app as app, jsonify, request, render_template
 from flask_security import auth_required, roles_required
 from werkzeug.security import check_password_hash
 from flask_restful import marshal, fields
-from .models import User, Professional, Service, Customer, db
+from .models import User, Professional, Service, Customer, ServiceRequest, db
 from .sec import datastore
 
 @app.get('/')
@@ -41,7 +41,7 @@ def user_login():
         return jsonify({"message": "User Not Found"}), 404
     
     if check_password_hash(user.password, data.get("password")):
-        return jsonify({"token": user.get_auth_token(), "email": user.email, "role": user.roles[0].name, "active": user.active})
+        return jsonify({"id": user.id, "token": user.get_auth_token(), "email": user.email, "role": user.roles[0].name, "active": user.active})
     else:
         return jsonify({"message" :"Wrong Password"}), 400
 
@@ -77,3 +77,14 @@ def del_customer(id):
     db.session.delete(customer)
     db.session.commit()
     return jsonify({"message": "Customer Deleted"})
+
+@app.get('/service-details/<int:id>')
+def service_details(id):
+    service_request = ServiceRequest.query.get(id)
+    service = Service.query.get(service_request.service_id)
+    professional = Professional.query.get(service_request.professional_id)
+    print(service_request.service_status)
+    if(service_request.service_status=='requested'):
+        return jsonify({"name": service.name, "description": service.description, "professional": professional.full_name})
+    if(service_request.service_status=='closed'):
+        return jsonify({"name": service.name, "description": service.description, "professional": professional.full_name, "rating": service_request.rating, "remarks": service_request.remarks})

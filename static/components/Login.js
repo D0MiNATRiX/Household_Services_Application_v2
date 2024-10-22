@@ -51,6 +51,8 @@ export default{
                 localStorage.setItem('auth-token', data.token)
                 localStorage.setItem('role', data.role)
                 localStorage.setItem('active', data.active)
+                localStorage.setItem('user_id', data.id)
+                localStorage.setItem('id', data.email.charAt(data.email.length - 11))
                 this.$router.push({path: '/'})
             }
             else {

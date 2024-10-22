@@ -20,6 +20,12 @@ export default{
                     <li class="nav-item" v-if="role=='admin'">
                         <router-link class="nav-link" to="/create-service">Create Service</router-link>
                     </li>
+                    <li class="nav-item" v-if="role=='customer'">
+                        <router-link class="nav-link" to="/service-history">Service History</router-link>
+                    </li>
+                    <li class="nav-item text-end" v-if="active=='false'">
+                        <button class="nav-link" @click="logout">Back To Login</button>
+                    </li>
                     <li class="nav-item text-end" v-if="is_login && active=='true'">
                         <button class="nav-link" @click="logout">Logout</button>
                     </li>
@@ -37,9 +43,10 @@ export default{
     },
     methods: {
         logout() {
-            localStorage.removeItem('role')
-            localStorage.removeItem('auth-token')
-            localStorage.removeItem('active')
+            // localStorage.removeItem('role')
+            // localStorage.removeItem('auth-token')
+            // localStorage.removeItem('active')
+            localStorage.clear()
             this.$router.push('/login')
         }
     }
