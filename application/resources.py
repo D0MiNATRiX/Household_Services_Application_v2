@@ -156,19 +156,20 @@ class ServiceRequests(Resource):
         return {"message": "Service Request Added"}
     
 class AcceptServiceRequest(Resource):
-    # @auth_required('token')
-    # @roles_required('admin')
-    # def get(self,id):
-    #     service = Service.query.get(id)
-    #     return marshal(service, service_fields)
+    def get(self,id):
+        service_request = ServiceRequest.query.get(id)
+        service_request.professional_id = None
+        service_request.service_status = 'requested'
+        db.session.commit()
+        return {"message": "Service Request Rejected"}
     
     def post(self,id):
         service_request = ServiceRequest.query.get(id)
         args = parser4.parse_args()
         service_request.professional_id = args.professional_id
-        service_request.date_of_completion = args.date_of_completion
+        service_request.service_status = 'assigned'
         db.session.commit()
-        return {"message": "Service Request Updated"}
+        return {"message": "Service Request Accepted"}
     
 parser5 = reqparse.RequestParser()
 parser5.add_argument('user_id', type=int, help='User_id is required and should be an integer', required=True)
@@ -202,6 +203,6 @@ api.add_resource(Customers, '/customers')
 api.add_resource(Professionals, '/professionals')
 api.add_resource(UpdateService, '/update/service/<int:id>')
 api.add_resource(ServiceRequests, '/request/service')
-api.add_resource(AcceptServiceRequest, '/update/service/request/<int:id>')
+api.add_resource(AcceptServiceRequest, '/accept/service-request/<int:id>')
 api.add_resource(ServiceRequestByCustomer, '/service-request/customer')
 api.add_resource(CloseServiceRequest, '/close/service-request/<int:id>')
