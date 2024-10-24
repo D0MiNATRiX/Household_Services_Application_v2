@@ -4,6 +4,7 @@ from werkzeug.security import check_password_hash
 from flask_restful import marshal, fields
 from .models import User, Professional, Service, Customer, ServiceRequest, db
 from .sec import datastore
+from .tasks import say_hello
 
 @app.get('/')
 def home():
@@ -88,3 +89,8 @@ def service_details(id):
         return jsonify({"name": service.name, "description": service.description, "professional": professional.full_name})
     if(service_request.service_status=='closed'):
         return jsonify({"name": service.name, "description": service.description, "professional": professional.full_name, "rating": service_request.rating, "remarks": service_request.remarks})
+    
+@app.get('/say-hello')
+def say_hello_view():
+    t = say_hello.delay()
+    return jsonify({"task-id": t.id})
