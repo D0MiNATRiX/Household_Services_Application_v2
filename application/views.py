@@ -1,10 +1,12 @@
-from flask import current_app as app, jsonify, request, render_template
+from flask import current_app as app, jsonify, request, render_template, send_file
 from flask_security import auth_required, roles_required
 from werkzeug.security import check_password_hash
 from flask_restful import marshal, fields
+import flask_excel as excel
+from celery.result import AsyncResult
 from .models import User, Professional, Service, Customer, ServiceRequest, db
 from .sec import datastore
-from .tasks import say_hello
+from .tasks import create_service_request_csv
 
 @app.get('/')
 def home():
@@ -89,8 +91,17 @@ def service_details(id):
         return jsonify({"name": service.name, "description": service.description, "professional": professional.full_name})
     if(service_request.service_status=='closed'):
         return jsonify({"name": service.name, "description": service.description, "professional": professional.full_name, "rating": service_request.rating, "remarks": service_request.remarks})
-    
-@app.get('/say-hello')
-def say_hello_view():
-    t = say_hello.delay()
-    return jsonify({"task-id": t.id})
+
+@app.get('/download-csv')
+def download_csv():
+    task = create_service_request_csv.delay()
+    return jsonify({"task-id": task.id})
+
+@app.get('/get-csv/<task_id>')
+def get_csv(task_id):
+    res = AsyncResult(task_id)
+    if res.ready():
+        filename = res.result
+        return send_file(filename, as_attachment=True)
+    else:
+        return jsonify({"message": "Task Pending"}), 404

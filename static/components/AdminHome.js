@@ -1,6 +1,8 @@
 export default{
     template: `
     <div>
+        <button @click='download_csv'>Download CSV</button>
+        <span v-if='isWaiting'> Waiting... </span>
         <h1 class="text-danger text-center">Welcome Admin</h1>
         <h2 class="text-center">Services</h2>
         <div class="d-flex justify-content-center p-1">
@@ -19,5 +21,29 @@ export default{
             </div>
         </div>
     </div>
-    `
+    `,
+    data() {
+        return {
+            isWaiting: false
+        }
+    },
+    methods: {
+        async download_csv() {
+            this.isWaiting = true
+            const res = await fetch('/download-csv')
+            const data = await res.json()
+            if (res.ok) {
+                const taskId = data['task-id']
+                const intv = setInterval(async () => {
+                    const csv_res = await fetch(`/get-csv/${taskId}`)
+                    if(csv_res.ok){
+                        this.isWaiting = false
+                        clearInterval(intv)
+                        window.location.href = `/get-csv/${taskId}`
+                    }
+                }, 1000)
+            }
+        }
+
+    }
 }
