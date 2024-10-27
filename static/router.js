@@ -8,6 +8,7 @@ import ServiceProfessionalSignup from "./components/ServiceProfessionalSignup.js
 import ServiceHistory from "./components/ServiceHistory.js"
 import ServiceRemarks from "./components/ServiceRemarks.js"
 import UpdateServiceRemarks from "./components/UpdateServiceRemarks.js"
+import AllServiceRequest from "./components/AllServiceRequest.js"
 
 const routes = [
     {path: '/', component: Home, name: 'Home'},
@@ -19,7 +20,8 @@ const routes = [
     {path: '/service-professional-signup', component: ServiceProfessionalSignup},
     {path: '/service-history', component: ServiceHistory},
     {path: '/service-remarks', component: ServiceRemarks},
-    {path: '/update-service-remarks', component: UpdateServiceRemarks}
+    {path: '/update-service-remarks', component: UpdateServiceRemarks},
+    {path: '/all-service-request', component: AllServiceRequest}
 ]
 
 export default new VueRouter({

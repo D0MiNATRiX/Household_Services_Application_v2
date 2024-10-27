@@ -1,8 +1,6 @@
 export default{
     template: `
     <div>
-        <button @click='download_csv'>Download CSV</button>
-        <span v-if='isWaiting'> Waiting... </span>
         <h1 class="text-danger text-center">Welcome Admin</h1>
         <h2 class="text-center">Services</h2>
         <div class="d-flex justify-content-center p-1">

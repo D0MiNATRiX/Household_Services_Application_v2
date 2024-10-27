@@ -4,6 +4,7 @@ from .models import Service,Customer,User,Professional, ServiceRequest, db
 from werkzeug.security import generate_password_hash
 from application.sec import datastore
 from datetime import datetime
+from .instances import cache
 
 api = Api(prefix='/api')
 
@@ -23,6 +24,7 @@ service_fields = {
 
 class Services(Resource):
     @auth_required("token")
+    @cache.cached(timeout=50)
     def get(self):
         all_services = Service.query.all()
         if "professional" not in current_user.roles:
