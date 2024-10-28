@@ -105,3 +105,12 @@ def get_csv(task_id):
         return send_file(filename, as_attachment=True)
     else:
         return jsonify({"message": "Task Pending"}), 404
+    
+@app.get('/test')
+def test():
+    service_requests = ServiceRequest.query.with_entities(ServiceRequest.service_id).all()
+    service_ids = []
+    for service_request in service_requests:
+        service_ids.append(service_request.service_id)
+    most_frequnt = max(set(service_ids), key=service_ids.count)
+    return jsonify({"message": "OK"})
