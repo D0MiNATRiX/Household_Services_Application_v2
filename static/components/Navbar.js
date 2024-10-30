@@ -18,9 +18,6 @@ export default{
                         <router-link class="nav-link" to="/users">Users</router-link>
                     </li>
                     <li class="nav-item" v-if="role=='admin'">
-                        <router-link class="nav-link" to="/create-service">Create Service</router-link>
-                    </li>
-                    <li class="nav-item" v-if="role=='admin'">
                         <router-link class="nav-link" to="/all-service-request">Service Requests</router-link>
                     </li>
                     <li class="nav-item" v-if="role=='customer'">

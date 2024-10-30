@@ -87,7 +87,7 @@ def service_details(id):
     service = Service.query.get(service_request.service_id)
     professional = Professional.query.get(service_request.professional_id)
     print(service_request.service_status)
-    if(service_request.service_status=='requested'):
+    if(service_request.service_status in ['requested','assigned']):
         return jsonify({"name": service.name, "description": service.description, "professional": professional.full_name})
     if(service_request.service_status=='closed'):
         return jsonify({"name": service.name, "description": service.description, "professional": professional.full_name, "rating": service_request.rating, "remarks": service_request.remarks})
